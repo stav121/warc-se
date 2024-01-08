@@ -1,0 +1,104 @@
+<!-- Header -->
+<div style="display: flex; justify-content:center; align-items:center; padding-top: 20px;">
+  <h3>WARC Search Engine</h3>
+</div>
+
+<!-- Info button -->
+<p-overlayPanel #op>
+  <ng-template pTemplate>
+    <div>
+      <span><i class="pi pi-folder" style="color:darkseagreen;"></i> Corpus count: {{stats.corpus_count}}</span>
+      <br>
+      <span><i class="pi pi-file" style="color:cornflowerblue"></i> Record count: {{stats.record_count}}</span>
+      <br>
+      <span><i class="pi pi-pencil" style="color:darkorange"></i> Word count: {{stats.word_count}}</span>
+    </div>
+  </ng-template>
+</p-overlayPanel>
+
+<!-- Search area -->
+<div class="container">
+  <div class="p-col-12 p-md-4">
+    <div class="p-inputgroup">
+      <div *ngIf="this.isAlive" style="padding-right: 5px">
+        <button [@heartBeat]="this.animateHeartbeat" pTooltip="Server is OK" pButton pRipple type="button"
+                icon="pi pi-heart" class="p-button-rounded p-button-success"></button>
+      </div>
+      <div *ngIf="!this.isAlive" style="padding-right: 5px">
+        <button [@heartBeat]="this.animateHeartbeat" pTooltip="Failed to connect to server." pButton pRipple
+                type="button" icon="pi pi-heart" class="p-button-rounded p-button-danger"></button>
+      </div>
+      <button type="button" pButton pRipple icon="pi pi-arrow-down" (click)="op.toggle($event)" pTooltip="View stats"
+              tooltipPosition="top"></button>
+      <input type="text" pInputText placeholder="Search..." [(ngModel)]="query" required="true" minlength="2"
+             pTooltip="Query" tooltipPosition="top">
+      <button type="button" pButton pRipple icon="pi pi-search" (click)="search()" pTooltip="Search"
+              tooltipPosition="top"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Main table -->
+<div class="container">
+  <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="isLoading"></p-progressBar>
+  <p-table [value]="results" [loading]="isLoading" [scrollable]="true" [rows]="100" scrollHeight="700px"
+           [virtualScroll]="true" [virtualRowHeight]="34" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="trec_id">TREC ID
+          <p-sortIcon field="trec_id"></p-sortIcon>
+        </th>
+        <th pSortableColumn="corpus">Corpus
+          <p-sortIcon field="corpus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="score_mixed">Score
+          <p-sortIcon field="score_mixed"></p-sortIcon>
+        </th>
+        <th style="width: 5%">Link</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-result>
+      <tr>
+        <td>{{result.trec_id}}</td>
+        <td>{{result.corpus}}</td>
+        <td>{{result.score_mixed}}</td>
+        <td style="width: 5%">
+          <a href="{{result.url}}">
+            <p-button icon="pi pi-arrow-right"></p-button>
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <p-messages severity="info">
+        <ng-template pTemplate>
+          <span><i class="pi pi-question-circle"></i> No results found yet...</span>
+        </ng-template>
+      </p-messages>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div *ngIf="result_count">
+        <span><i class="pi pi-clock" style="color: green" pTooltip="Search Duration" tooltipPosition="bottom"></i> Duration: {{this.duration / 1000}}
+          s </span>
+        <span><i class="pi pi-info-circle" style="color: cornflowerblue" pTooltip="Total Results"
+                 tooltipPosition="bottom"></i> Total Results: {{this.result_count}}</span>
+      </div>
+      <div *ngIf="!result_count">
+        <span>No search stats...</span>
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Footer -->
+<div class="container">
+  <div class="row" style="align-content: center; justify-content: center;">
+    <div style="position:fixed; bottom:0px;">
+      Copyright© 2020 Stavros Grigoriou - Version: 0.1.0-beta
+    </div>
+  </div>
+</div>
+
+<!-- Toast for messages -->
+<p-toast>
+</p-toast>

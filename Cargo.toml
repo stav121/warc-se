@@ -1,0 +1,32 @@
+[package]
+name = "warcse"
+version = "0.1.0"
+authors = ["Stavros Grigoriou <unix121@protonmail.com>"]
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "warcse"
+
+[dependencies]
+actix-web = "4.0.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+actix-files = "0.6.2"
+actix-cors = "0.6.5"
+config = { version = "0.10.1", default-features = false, features = ["yaml"] }
+sqlx = { version = "0.7.0", default-features = false, features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono", "migrate"] }
+serde = { version = "1.0.115", features = ["derive"] }
+log = "0.4.10"
+simple_logger = "4.3.3"
+serde_json = { version = "1.0.0" }
+json = "0.12"
+convert_case = "0.6.0"
+actix-web-lab = "0.20.1"
+
+[dev-dependencies]
+reqwest = { version = "0.11.23", features = ["json"] }
+tokio = "1.0.1"
+actix-rt = "2.0.0"
